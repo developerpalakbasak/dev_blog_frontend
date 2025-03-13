@@ -15,7 +15,7 @@ const BlogList = () => {
     const fetchBlogs = async () => {
         try {
 
-            const response = await axios.get(`${siteUrl}/api/blogS`);
+            const response = await axios.get(`${siteUrl}/api/blogs`);
 
 
             const { data } = response
