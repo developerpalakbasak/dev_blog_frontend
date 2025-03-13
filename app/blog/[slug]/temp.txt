@@ -1,0 +1,57 @@
+"use client";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+
+const Blog = ({ params }) => {
+    const [data, setData] = useState(null); // State for blog data
+    const [loading, setLoading] = useState(true); // State for loading
+    const [id, setId] = useState(null); // State for unwrapped id
+
+    // Unwrap params using React.use()
+    useEffect(() => {
+        const unwrapParams = async () => {
+            const unwrappedParams = await React.use(params);
+            setId(unwrappedParams.id); // Set the id state
+        };
+        unwrapParams();
+    }, [params]);
+
+    // Fetch blog data
+    useEffect(() => {
+        if (id) {
+            const fetchBlogData = async () => {
+                try {
+                    const response = await axios.get("/api/blog", {
+                        params: {
+                            id: id,
+                        },
+                    });
+                    setData(response.data); // Set the data
+                    setLoading(false); // Set loading to false after fetching data
+                } catch (error) {
+                    console.error("Error fetching blog data:", error);
+                    setLoading(false); // Set loading to false even if there's an error
+                }
+            };
+            fetchBlogData();
+        }
+    }, [id]); // Only run when id is set
+
+    if (loading) {
+        return <h1>Loading...</h1>;
+    }
+
+    if (!data) {
+        return <h1>Blog not found</h1>;
+    }
+
+    return (
+        <div>
+            <h1>Hello, I am {id}</h1>
+            <h2>Blog Title: {data.title}</h2>
+            <p>{data.description}</p>
+        </div>
+    );
+};
+
+export default Blog;
